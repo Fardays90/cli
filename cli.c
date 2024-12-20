@@ -66,6 +66,12 @@ void change_directory(const char *path){
         perror("Error changing directory");
     }
 }
+void execute_external_command(const char *com){
+    int returnVal = system(com);
+    if(returnVal == -1){
+        perror("Unknown command/Error executing command");
+    }
+}
 
 void help(){
     printf("Available commands:\n");
@@ -78,11 +84,11 @@ void help(){
 }
 int main(int argc, char *argv[]){
     char command[256];
-    printf("-----------------------------------------------------------------------------\n");
-    printf("Welcome to the blood moon cli. Type 'help' to check all commands available.\n");
+    printf("\033[31m-----------------------------------------------------------------------------\033[31m\n");
+    printf("\033[33mWelcome to the blood moon cli. Type 'help' to check all commands available.\033[33m\n");
 
     while(1){
-        printf("~~>");
+        printf("\033[31m~>\033[33m");
         if(fgets(command, sizeof(command), stdin) == NULL){
             break;
         }
@@ -109,7 +115,7 @@ int main(int argc, char *argv[]){
         else if(strcmp(command, "exit") == 0){
             break;
         }else{
-            printf("Unknown command: %s\n", command);
+            execute_external_command(command);
         }
     }
     printf("We shall meet again. \n");
