@@ -22,7 +22,7 @@ void list_files(){
     struct dirent *dir;
     struct stat file_stat;
     file_count = 0;
-    d = opendir(".");
+    d = opendir(".");   
     if(d){
         while((dir = readdir(d)) != NULL){
             if(stat(dir->d_name, &file_stat) == 0 && S_ISREG(file_stat.st_mode)){
@@ -36,7 +36,7 @@ void list_files(){
     }
 }
 int compare_alpha(const void *a, const void *b){
-    return strcmp(((FileInfo *)a) -> name, ((FileInfo *)b) -> name);
+    return strcasecmp(((FileInfo *)a) -> name, ((FileInfo *)b) -> name);
 }
 int compare_time(const void *a, const void *b){
     return difftime(((FileInfo*) b) -> mod_time, ((FileInfo*)a) -> mod_time);
