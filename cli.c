@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #define MAX_FILES 1000 
 
@@ -72,6 +73,15 @@ void execute_external_command(const char *com){
         perror("Unknown command/Error executing command");
     }
 }
+bool isSafeCommand(const char *com){
+    const char *unsafe_commands[] = {"rm", "del", "shutdown", "reboot", "chmod", "chown"};
+    for(int i = 0; i < sizeof(unsafe_commands) / sizeof(unsafe_commands[0]); i++){
+        if(strstr(com, unsafe_commands[i]) != NULL){
+            return false;
+        }
+    } 
+    return true;
+}
 
 void help(){
     printf("Available commands:\n");
@@ -115,7 +125,12 @@ int main(int argc, char *argv[]){
         else if(strcmp(command, "exit") == 0){
             break;
         }else{
-            execute_external_command(command);
+            if(isSafeCommand(command)){
+                execute_external_command(command);
+            }
+            else{
+                perror("Error");
+            }
         }
     }
     printf("We shall meet again. \n");
