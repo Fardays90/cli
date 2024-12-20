@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <unistd.h>
 
 #define MAX_FILES 1000 
 
@@ -19,6 +20,7 @@ void list_files(){
     DIR *d;
     struct dirent *dir;
     struct stat file_stat;
+    file_count = 0;
     d = opendir(".");
     if(d){
         while((dir = readdir(d)) != NULL){
@@ -57,12 +59,20 @@ void list(){
         printf("%s\n", files[i].name);
     }
 }
+void change_directory(const char *path){
+    if(chdir(path) == 0){
+        printf("Changed directory to: %s\n", path);
+    }else{
+        perror("Error changing directory");
+    }
+}
 
 void help(){
     printf("Available commands:\n");
     printf("help - Show this help message\n");
     printf("list - Check all the files in current directory\n");
     printf("sort_alpha - Sort files alphabetically\n");
+    printf("gd <path> - Change directory\n");
     printf("sort_time - Sort files by modification time\n");
     printf("exit - Exit the CLI\n");
 }
@@ -87,6 +97,10 @@ int main(int argc, char *argv[]){
         else if(strcmp(command, "list") == 0){
             list_files();
             list();
+        }
+        else if(strncmp(command, "gd ",3) == 0){
+            change_directory(command + 3);
+            list_files();
         }
         else if(strcmp(command, "sort_time") == 0){
             list_files();
